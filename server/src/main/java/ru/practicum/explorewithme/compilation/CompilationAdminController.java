@@ -1,7 +1,6 @@
 package ru.practicum.explorewithme.compilation;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.compilation.dto.CompilationDto;
@@ -9,7 +8,6 @@ import ru.practicum.explorewithme.compilation.dto.NewCompilationDto;
 
 import javax.validation.Valid;
 
-@Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor

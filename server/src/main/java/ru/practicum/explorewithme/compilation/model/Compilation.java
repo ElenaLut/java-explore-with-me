@@ -5,6 +5,7 @@ import lombok.*;
 import ru.practicum.explorewithme.event.model.Event;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
@@ -19,6 +20,8 @@ public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @Column(name = "title", length = 120)
     private String title;
     private boolean pinned;
     @ManyToMany

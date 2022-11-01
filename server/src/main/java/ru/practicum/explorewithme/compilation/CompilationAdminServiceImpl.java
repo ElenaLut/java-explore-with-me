@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     private final CompilationMapper compilationMapper;
@@ -30,7 +29,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
 
-    @Transactional
     @Override
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
         Compilation compilation = compilationMapper.toCompilation(newCompilationDto);
@@ -38,7 +36,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         return compilationMapper.toCompilationDto(compilationRepository.save(compilation), getEventsOfCompilation(compilation));
     }
 
-    @Transactional
     @Override
     public void deleteCompilation(Long id) {
         Compilation compilation = getCompilationById(id);
@@ -46,7 +43,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         log.info("Подборка {} удалена", compilation.getId());
     }
 
-    @Transactional
     @Override
     public void deleteEventInsideCompilation(Long compId, Long eventId) {
         Compilation compilation = getCompilationById(compId);
@@ -61,7 +57,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         compilationRepository.save(compilation);
     }
 
-    @Transactional
     @Override
     public void addEventInsideCompilation(Long compId, Long eventId) {
         Compilation compilation = getCompilationById(compId);

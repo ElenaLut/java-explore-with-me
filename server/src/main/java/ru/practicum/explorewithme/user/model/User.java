@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.user.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -14,8 +15,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name")
+    @NotNull
+    @Column(name = "name", length = 120)
     private String name;
-    @Column(name = "email")
+    @NotNull
+    @Column(name = "email", length = 254)
     private String email;
 }

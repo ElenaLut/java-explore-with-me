@@ -43,11 +43,12 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
             log.error("Пользователь {} является автором события {}", userId, eventId);
             throw new ForbiddenException("Пользователь ен может отправить запрос на участие на свое событие");
         }
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (event.getState() != EventState.PUBLISHED) {
             log.error("Событие {} не опубликовано", eventId);
             throw new ForbiddenException("Заявку на участие можно отправить только на опубликованные события");
         }
-        if (requestRepository.getConfirmedRequests(eventId) >= event.getParticipantLimit() && event.getParticipantLimit() != 0) {
+        if (requestRepository.getConfirmedRequests(eventId) >= event.getParticipantLimit()
+                && event.getParticipantLimit() != 0) {
             log.error("Количество участников превышает лимит события {}", eventId);
             throw new ForbiddenException("Количество участников не может превышать лимит");
         }
@@ -73,7 +74,7 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
             log.error("Пользователь {} не может отменить запрос {}", userId, requestId);
             throw new ForbiddenException("Только автор запроса может отменить его");
         }
-        if (request.getStatus().equals(RequestStatus.CANCELED)) {
+        if (request.getStatus() == RequestStatus.CANCELED) {
             log.error("Запрос {} уже отменен", requestId);
             throw new ForbiddenException("Нельзя отменить запрос, который уже был отменен");
         }

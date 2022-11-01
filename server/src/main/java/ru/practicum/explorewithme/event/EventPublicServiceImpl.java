@@ -30,7 +30,16 @@ public class EventPublicServiceImpl implements EventPublicService {
     private final StatsClient statsClient;
 
     @Override
-    public List<EventShortDto> getEvents(String text, List<Long> categoriesId, boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, boolean available, String sort, int from, int size, HttpServletRequest request) {
+    public List<EventShortDto> getEvents(String text,
+                                         List<Long> categoriesId,
+                                         boolean paid,
+                                         LocalDateTime rangeStart,
+                                         LocalDateTime rangeEnd,
+                                         boolean available,
+                                         String sort,
+                                         int from,
+                                         int size,
+                                         HttpServletRequest request) {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
@@ -42,7 +51,8 @@ public class EventPublicServiceImpl implements EventPublicService {
                 .map(eventMapper::toEventFullDto)
                 .collect(Collectors.toList());
         if (available) {
-            events = events.stream().filter(event -> event.getConfirmedRequests() < event.getParticipantLimit() || event.getParticipantLimit() == 0)
+            events = events.stream().filter(event -> event.getConfirmedRequests() < event.getParticipantLimit()
+                            || event.getParticipantLimit() == 0)
                     .collect(Collectors.toList());
         }
         if (sort != null) {
@@ -73,7 +83,7 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     public EventFullDto getFullEvent(Long id, HttpServletRequest httpServletRequest) {
         Event event = getEventById(id);
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (event.getState() != EventState.PUBLISHED) {
             log.error("запрошенное событие не опубликовано");
             throw new ForbiddenException("Получить информацию можно только о опубликованных событиях");
         }

@@ -1,7 +1,6 @@
 package ru.practicum.explorewithme.event;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
@@ -14,7 +13,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +29,8 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events")
-    public EventFullDto changeEventByAuthor(@Valid @RequestBody UpdateEventRequestDto updateEventRequestDto, @PathVariable Long userId) {
+    public EventFullDto changeEventByAuthor(@Valid @RequestBody UpdateEventRequestDto updateEventRequestDto,
+                                            @PathVariable Long userId) {
         return eventPrivateService.changeEventByAuthor(updateEventRequestDto, userId);
     }
 
@@ -51,17 +50,22 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{userId}/events/{eventId}/requests")
-    public List<ParticipationRequestDto> getRequestsOnAuthorEvent(@PathVariable Long eventId, @PathVariable Long userId) {
+    public List<ParticipationRequestDto> getRequestsOnAuthorEvent(@PathVariable Long eventId,
+                                                                  @PathVariable Long userId) {
         return eventPrivateService.getRequestsOnAuthorEvent(eventId, userId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
-    public ParticipationRequestDto confirmRequestByAuthor(@PathVariable Long eventId, @PathVariable Long reqId, @PathVariable Long userId) {
+    public ParticipationRequestDto confirmRequestByAuthor(@PathVariable Long eventId,
+                                                          @PathVariable Long reqId,
+                                                          @PathVariable Long userId) {
         return eventPrivateService.confirmRequestByAuthor(eventId, reqId, userId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
-    public ParticipationRequestDto rejectRequestByAuthor(@PathVariable Long eventId, @PathVariable Long reqId, @PathVariable Long userId) {
+    public ParticipationRequestDto rejectRequestByAuthor(@PathVariable Long eventId,
+                                                         @PathVariable Long reqId,
+                                                         @PathVariable Long userId) {
         return eventPrivateService.rejectRequestByAuthor(eventId, reqId, userId);
     }
 

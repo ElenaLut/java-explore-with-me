@@ -116,7 +116,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public ParticipationRequestDto confirmRequestByAuthor(Long eventId, Long reqId, Long userId) {
         EventFullDto eventFullDto = getFullInfoByAuthor(eventId, userId);
-        if (eventFullDto.getConfirmedRequests() >= eventFullDto.getParticipantLimit() && eventFullDto.getParticipantLimit() != null) {
+        if (eventFullDto.getConfirmedRequests() >= eventFullDto.getParticipantLimit()
+                && eventFullDto.getParticipantLimit() != null) {
             log.error("Максимальное число участников не может быть больше {}", eventFullDto.getParticipantLimit());
             throw new ForbiddenException("Превышено максимальное количество участников");
         }
@@ -129,7 +130,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public ParticipationRequestDto rejectRequestByAuthor(Long eventId, Long reqId, Long userId) {
         EventFullDto eventFullDto = getFullInfoByAuthor(eventId, userId);
-        if (eventFullDto.getConfirmedRequests() >= eventFullDto.getParticipantLimit() && eventFullDto.getParticipantLimit() != null) {
+        if (eventFullDto.getConfirmedRequests() >= eventFullDto.getParticipantLimit()
+                && eventFullDto.getParticipantLimit() != null) {
             log.error("Максимальное число участников не может быть больше {}", eventFullDto.getParticipantLimit());
             throw new ForbiddenException("Превышено максимальное количество участников");
         }

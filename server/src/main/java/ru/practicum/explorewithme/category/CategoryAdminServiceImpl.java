@@ -20,7 +20,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     public CategoryDto changeCategory(CategoryDto categoryDto) {
         Category categoryUpdate = categoryMapper.toUpdate(categoryDto);
         Category category = getCategoryById(categoryUpdate.getId());
-        if (categoryUpdate.getName().equals(category.getName())) {
+        if (categoryUpdate.getName().equals(category.getName()) && category.getName() != null) {
             log.error("Указанное имя уже используется в категории");
             throw new ForbiddenException("Имя категории должно отличаться от текущего");
         }

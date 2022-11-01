@@ -23,11 +23,8 @@ public class UserAdminServiceImpl implements UserAdminService {
     @Override
     public List<UserDto> getUsers(Set<Long> id, int from, int size) {
         List<User> users;
-        if (id == null) {
-            users = userRepository.findAll(PageRequest.of(from / size, size)).getContent();
-        } else {
-            users = userRepository.findUsersByIdIn(id, PageRequest.of(from / size, size));
-        }
+        users = (id == null) ? userRepository.findAll(PageRequest.of(from / size, size)).getContent()
+                : userRepository.findUsersByIdIn(id, PageRequest.of(from / size, size));
         log.info("Получены все пользователи");
         return users
                 .stream()

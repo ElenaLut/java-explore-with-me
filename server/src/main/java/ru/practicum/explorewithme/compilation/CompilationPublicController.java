@@ -1,8 +1,6 @@
 package ru.practicum.explorewithme.compilation;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.compilation.dto.CompilationDto;
@@ -11,11 +9,9 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @RequestMapping(path = "/compilations")
 public class CompilationPublicController {
 

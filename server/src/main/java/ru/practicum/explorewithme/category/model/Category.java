@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.category.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -14,6 +15,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name")
+    @NotNull
+    @Column(name = "name", length = 120)
     private String name;
 }

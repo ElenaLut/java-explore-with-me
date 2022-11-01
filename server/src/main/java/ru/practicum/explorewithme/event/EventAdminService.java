@@ -7,7 +7,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventAdminService {
-    List<EventFullDto> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, LocalDateTime start, LocalDateTime end, int from, int size);
+    List<EventFullDto> getEventsByAdmin(List<Long> users,
+                                        List<String> states,
+                                        List<Long> categories,
+                                        LocalDateTime start,
+                                        LocalDateTime end,
+                                        int from,
+                                        int size);
 
     EventFullDto changeEventByAdmin(AdminUpdateEventRequest adminUpdateEventRequest, Long id);
 

@@ -16,6 +16,7 @@ import ru.practicum.explorewithme.exception.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,7 +28,13 @@ public class EventAdminServiceImpl implements EventAdminService {
     private final EventMapper eventMapper;
 
     @Override
-    public List<EventFullDto> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, LocalDateTime start, LocalDateTime end, int from, int size) {
+    public List<EventFullDto> getEventsByAdmin(List<Long> users,
+                                               List<String> states,
+                                               List<Long> categories,
+                                               LocalDateTime start,
+                                               LocalDateTime end,
+                                               int from,
+                                               int size) {
         if (start == null) {
             start = LocalDateTime.now();
         }
@@ -49,35 +56,23 @@ public class EventAdminServiceImpl implements EventAdminService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public EventFullDto changeEventByAdmin(AdminUpdateEventRequest adminUpdateEventRequest, Long id) {
         Event event = getEventById(id);
-        if (adminUpdateEventRequest.getAnnotation() != null) {
-            event.setAnnotation(adminUpdateEventRequest.getAnnotation());
-        }
-        if (adminUpdateEventRequest.getCategory() != null) {
-            event.setCategory(new Category(adminUpdateEventRequest.getCategory(), null));
-        }
-        if (adminUpdateEventRequest.getDescription() != null) {
-            event.setDescription(adminUpdateEventRequest.getDescription());
-        }
-        if (adminUpdateEventRequest.getEventDate() != null) {
-            event.setEventDate(adminUpdateEventRequest.getEventDate());
-        }
-        if (adminUpdateEventRequest.getPaid() != null) {
-            event.setPaid(adminUpdateEventRequest.getPaid());
-        }
-        if (adminUpdateEventRequest.getParticipantLimit() != null) {
-            event.setParticipantLimit(adminUpdateEventRequest.getParticipantLimit());
-        }
-        if (adminUpdateEventRequest.getTitle() != null) {
-            event.setTitle(adminUpdateEventRequest.getTitle());
-        }
+        Optional.ofNullable(adminUpdateEventRequest.getAnnotation()).ifPresent(event::setAnnotation);
+        Optional.ofNullable(adminUpdateEventRequest.getDescription()).ifPresent(event::setDescription);
+        Optional.ofNullable(adminUpdateEventRequest.getEventDate()).ifPresent(event::setEventDate);
+        Optional.ofNullable(adminUpdateEventRequest.getPaid()).ifPresent(event::setPaid);
+        Optional.ofNullable(adminUpdateEventRequest.getParticipantLimit()).ifPresent(event::setParticipantLimit);
+        Optional.ofNullable(adminUpdateEventRequest.getTitle()).ifPresent(event::setTitle);
+        Optional.ofNullable(adminUpdateEventRequest.getRequestModeration()).ifPresent(event::setRequestModeration);
+        Optional.ofNullable(adminUpdateEventRequest.getRequestModeration()).ifPresent(event::setRequestModeration);
         if (adminUpdateEventRequest.getLocation() != null) {
             event.setLocation(new Location(adminUpdateEventRequest.getLocation().getLat(), adminUpdateEventRequest.getLocation().getLon()));
         }
-        if (adminUpdateEventRequest.getRequestModeration() != null) {
-            event.setRequestModeration(adminUpdateEventRequest.getRequestModeration());
+        if (adminUpdateEventRequest.getCategory() != null) {
+            event.setCategory(new Category(adminUpdateEventRequest.getCategory(), null));
         }
         log.info("Событие {} обновлено", event.getId());
         return eventMapper.toEventFullDto(eventRepository.save(event));
@@ -86,12 +81,12 @@ public class EventAdminServiceImpl implements EventAdminService {
     @Override
     public EventFullDto publishEvent(Long id) {
         Event event = getEventById(id);
-        if (!event.getState().equals(EventState.PENDING)) {
+        if (event.getState() != EventState.PENDING) {
             log.error("Событие {} не на модерации", event.getId());
             throw new ForbiddenException("Опубликовать можно только события на модерации");
         }
-        if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-            log.error("Собитие {} начинается менее чем через час", event.getId());
+        if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1)) && event.getEventDate() != null) {
+            log.error("Событие {} начинается менее чем через час", event.getId());
             throw new ForbiddenException(" Опубликовать событие можно максимум за час до его начала");
         }
         event.setState(EventState.PUBLISHED);
@@ -103,12 +98,12 @@ public class EventAdminServiceImpl implements EventAdminService {
     @Override
     public EventFullDto rejectEvent(Long id) {
         Event event = getEventById(id);
-        if (!event.getState().equals(EventState.PENDING)) {
+        if (event.getState() != EventState.PENDING) {
             log.error("Событие {} не на модерации", event.getId());
             throw new ForbiddenException("Отменить можно только события на модерации");
         }
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-            log.error("Собитие {} начинается менее чем через час", event.getId());
+            log.error("Событие {} начинается менее чем через час", event.getId());
             throw new ForbiddenException(" Отменить событие можно максимум за час до его начала");
         }
         event.setState(EventState.CANCELED);

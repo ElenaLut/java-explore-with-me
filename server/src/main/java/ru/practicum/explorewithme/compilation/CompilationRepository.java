@@ -5,16 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 import ru.practicum.explorewithme.compilation.model.Compilation;
 
 import java.util.List;
 
-@Repository
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
 
-    @Query("SELECT c FROM Compilation AS c " +
-            "WHERE :pinned IS NULL OR c.pinned = :pinned")
+    @Query("select c from Compilation as c " +
+            "where :pinned is null or c.pinned = :pinned")
     List<Compilation> findAllByPinned(@Param("pinned") boolean pinned, Pageable pageable);
 
     @Modifying

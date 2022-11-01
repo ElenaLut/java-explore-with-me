@@ -1,7 +1,6 @@
 package ru.practicum.explorewithme.user;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.user.dto.NewUserDto;
@@ -13,7 +12,6 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.Set;
 
-@Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor

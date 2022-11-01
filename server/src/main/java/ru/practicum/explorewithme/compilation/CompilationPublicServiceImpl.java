@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.compilation.dto.CompilationDto;
 import ru.practicum.explorewithme.compilation.model.Compilation;
 import ru.practicum.explorewithme.event.EventMapper;
@@ -19,14 +18,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CompilationPublicServiceImpl implements CompilationPublicService {
 
     private final CompilationRepository compilationRepository;
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
 
-    @Transactional
     @Override
     public List<CompilationDto> getAllCompilations(boolean pin, int from, int size) {
         List<Compilation> compilations = compilationRepository.findAllByPinned(pin, PageRequest.of(from / size, size));
@@ -37,7 +34,6 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
     public CompilationDto getFullCompilation(Long id) {
         Compilation compilation = getCompilationById(id);

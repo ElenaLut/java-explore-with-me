@@ -1,7 +1,10 @@
 package ru.practicum.explorewithme.stat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,7 +21,9 @@ public class EndpointHit {
     @Column(name = "hit_id")
     private Long id;
     private String app;
+    @Column(name = "uri", length = 512)
     private String uri;
+    @Column(name = "ip", length = 46)
     private String ip;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created")
