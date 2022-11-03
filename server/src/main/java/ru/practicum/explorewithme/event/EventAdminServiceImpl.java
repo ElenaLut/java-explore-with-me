@@ -67,7 +67,6 @@ public class EventAdminServiceImpl implements EventAdminService {
         Optional.ofNullable(adminUpdateEventRequest.getParticipantLimit()).ifPresent(event::setParticipantLimit);
         Optional.ofNullable(adminUpdateEventRequest.getTitle()).ifPresent(event::setTitle);
         Optional.ofNullable(adminUpdateEventRequest.getRequestModeration()).ifPresent(event::setRequestModeration);
-        Optional.ofNullable(adminUpdateEventRequest.getRequestModeration()).ifPresent(event::setRequestModeration);
         if (adminUpdateEventRequest.getLocation() != null) {
             event.setLocation(new Location(adminUpdateEventRequest.getLocation().getLat(), adminUpdateEventRequest.getLocation().getLon()));
         }
@@ -85,7 +84,7 @@ public class EventAdminServiceImpl implements EventAdminService {
             log.error("Событие {} не на модерации", event.getId());
             throw new ForbiddenException("Опубликовать можно только события на модерации");
         }
-        if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1)) && event.getEventDate() != null) {
+        if (event.getEventDate() != null && event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
             log.error("Событие {} начинается менее чем через час", event.getId());
             throw new ForbiddenException(" Опубликовать событие можно максимум за час до его начала");
         }

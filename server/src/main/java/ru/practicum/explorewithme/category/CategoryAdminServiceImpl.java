@@ -9,6 +9,8 @@ import ru.practicum.explorewithme.category.model.Category;
 import ru.practicum.explorewithme.exception.ForbiddenException;
 import ru.practicum.explorewithme.exception.NotFoundException;
 
+import java.util.Objects;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     public CategoryDto changeCategory(CategoryDto categoryDto) {
         Category categoryUpdate = categoryMapper.toUpdate(categoryDto);
         Category category = getCategoryById(categoryUpdate.getId());
-        if (categoryUpdate.getName().equals(category.getName()) && category.getName() != null) {
+        if (Objects.equals(category.getName(), categoryUpdate.getName())) {
             log.error("Указанное имя уже используется в категории");
             throw new ForbiddenException("Имя категории должно отличаться от текущего");
         }

@@ -8,6 +8,7 @@ import ru.practicum.explorewithme.client.StatsClient;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.event.dto.EventShortDto;
 import ru.practicum.explorewithme.event.model.Event;
+import ru.practicum.explorewithme.event.model.EventSort;
 import ru.practicum.explorewithme.event.model.EventState;
 import ru.practicum.explorewithme.exception.ForbiddenException;
 import ru.practicum.explorewithme.exception.IncorrectRequestException;
@@ -56,11 +57,11 @@ public class EventPublicServiceImpl implements EventPublicService {
                     .collect(Collectors.toList());
         }
         if (sort != null) {
-            if (sort.equals("EVENT_DATE")) {
+            if (EventSort.valueOf(sort) == EventSort.EVENT_DATE) {
                 events = events.stream()
                         .sorted(Comparator.comparing(EventFullDto::getEventDate))
                         .collect(Collectors.toList());
-            } else if (sort.equals("VIEWS")) {
+            } else if (EventSort.valueOf(sort) == EventSort.VIEWS) {
                 events = events.stream()
                         .sorted(Comparator.comparingLong(EventFullDto::getViews))
                         .collect(Collectors.toList());

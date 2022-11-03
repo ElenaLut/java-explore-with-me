@@ -38,9 +38,4 @@ public class ErrorHandler {
         log.info("400: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
-
-    public ResponseEntity<String> uncaughtException(Throwable e) {
-        log.info("500 INTERNAL_SERVER_ERROR: {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 }

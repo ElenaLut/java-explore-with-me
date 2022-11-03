@@ -22,6 +22,7 @@ import ru.practicum.explorewithme.user.UserRepository;
 import ru.practicum.explorewithme.user.model.User;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -49,26 +50,14 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public EventFullDto changeEventByAuthor(UpdateEventRequestDto updateEventRequestDto, Long userId) {
         Event event = getEventById(updateEventRequestDto.getEventId());
         checkAuthor(userId, event);
-        if (updateEventRequestDto.getAnnotation() != null) {
-            event.setAnnotation(updateEventRequestDto.getAnnotation());
-        }
+        Optional.ofNullable(updateEventRequestDto.getAnnotation()).ifPresent(event::setAnnotation);
+        Optional.ofNullable(updateEventRequestDto.getDescription()).ifPresent(event::setDescription);
+        Optional.ofNullable(updateEventRequestDto.getEventDate()).ifPresent(event::setEventDate);
+        Optional.ofNullable(updateEventRequestDto.getPaid()).ifPresent(event::setPaid);
+        Optional.ofNullable(updateEventRequestDto.getParticipantLimit()).ifPresent(event::setParticipantLimit);
+        Optional.ofNullable(updateEventRequestDto.getTitle()).ifPresent(event::setTitle);
         if (updateEventRequestDto.getCategory() != null) {
             event.setCategory(new Category(updateEventRequestDto.getCategory(), null));
-        }
-        if (updateEventRequestDto.getDescription() != null) {
-            event.setDescription(updateEventRequestDto.getDescription());
-        }
-        if (updateEventRequestDto.getEventDate() != null) {
-            event.setEventDate(updateEventRequestDto.getEventDate());
-        }
-        if (updateEventRequestDto.getPaid() != null) {
-            event.setPaid(updateEventRequestDto.getPaid());
-        }
-        if (updateEventRequestDto.getParticipantLimit() != null) {
-            event.setParticipantLimit(updateEventRequestDto.getParticipantLimit());
-        }
-        if (updateEventRequestDto.getTitle() != null) {
-            event.setTitle(updateEventRequestDto.getTitle());
         }
         event.setState(EventState.PENDING);
         log.info("Событие {} обновлено", event.getId());
@@ -116,8 +105,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public ParticipationRequestDto confirmRequestByAuthor(Long eventId, Long reqId, Long userId) {
         EventFullDto eventFullDto = getFullInfoByAuthor(eventId, userId);
-        if (eventFullDto.getConfirmedRequests() >= eventFullDto.getParticipantLimit()
-                && eventFullDto.getParticipantLimit() != null) {
+        if (eventFullDto.getParticipantLimit() != null
+                && eventFullDto.getConfirmedRequests() >= eventFullDto.getParticipantLimit()) {
             log.error("Максимальное число участников не может быть больше {}", eventFullDto.getParticipantLimit());
             throw new ForbiddenException("Превышено максимальное количество участников");
         }
@@ -130,8 +119,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public ParticipationRequestDto rejectRequestByAuthor(Long eventId, Long reqId, Long userId) {
         EventFullDto eventFullDto = getFullInfoByAuthor(eventId, userId);
-        if (eventFullDto.getConfirmedRequests() >= eventFullDto.getParticipantLimit()
-                && eventFullDto.getParticipantLimit() != null) {
+        if (eventFullDto.getParticipantLimit() != null
+                && eventFullDto.getConfirmedRequests() >= eventFullDto.getParticipantLimit()) {
             log.error("Максимальное число участников не может быть больше {}", eventFullDto.getParticipantLimit());
             throw new ForbiddenException("Превышено максимальное количество участников");
         }

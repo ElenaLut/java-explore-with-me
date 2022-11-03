@@ -47,8 +47,8 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
             log.error("Событие {} не опубликовано", eventId);
             throw new ForbiddenException("Заявку на участие можно отправить только на опубликованные события");
         }
-        if (requestRepository.getConfirmedRequests(eventId) >= event.getParticipantLimit()
-                && event.getParticipantLimit() != 0) {
+        if (event.getParticipantLimit() != 0
+                && requestRepository.getConfirmedRequests(eventId) >= event.getParticipantLimit()) {
             log.error("Количество участников превышает лимит события {}", eventId);
             throw new ForbiddenException("Количество участников не может превышать лимит");
         }
