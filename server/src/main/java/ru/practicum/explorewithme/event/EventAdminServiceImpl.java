@@ -39,7 +39,7 @@ public class EventAdminServiceImpl implements EventAdminService {
             start = LocalDateTime.now();
         }
         List<EventState> listEventState = new ArrayList<>();
-        if (states.isEmpty()) {
+        if (states == null) {
             listEventState = null;
         } else {
             for (String state : states) {
