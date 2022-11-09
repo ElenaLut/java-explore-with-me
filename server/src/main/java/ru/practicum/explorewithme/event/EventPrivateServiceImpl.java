@@ -6,6 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.category.CategoryRepository;
 import ru.practicum.explorewithme.category.model.Category;
+import ru.practicum.explorewithme.comment.CommentMapper;
+import ru.practicum.explorewithme.comment.CommentRepository;
+import ru.practicum.explorewithme.comment.model.Comment;
+import ru.practicum.explorewithme.comment.model.CommentState;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.event.dto.NewEventDto;
 import ru.practicum.explorewithme.event.dto.UpdateEventRequestDto;
@@ -36,6 +40,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final RequestRepository requestRepository;
     private final RequestMapper requestMapper;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
     @Override
     public List<EventFullDto> getEventsByAuthor(Long userId, int from, int size) {
@@ -82,7 +88,10 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public EventFullDto getFullInfoByAuthor(Long eventId, Long userId) {
         Event event = getEventById(eventId);
         checkAuthor(userId, event);
-        return eventMapper.toEventFullDto(event);
+        EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
+        List<Comment> comments = commentRepository.findAllByEventIdAndStatus(event.getId(), CommentState.PUBLISHED);
+        eventFullDto.setComments(comments.stream().map(commentMapper::toCommentDto).collect(Collectors.toList()));
+        return eventFullDto;
     }
 
     @Override
