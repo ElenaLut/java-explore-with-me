@@ -35,7 +35,7 @@ public class EventPrivateController {
     }
 
     @PostMapping("/{userId}/events")
-    public EventFullDto createEvent(@RequestBody NewEventDto newEventDto, @PathVariable Long userId) {
+    public EventFullDto createEvent(@Valid @RequestBody NewEventDto newEventDto, @PathVariable Long userId) {
         return eventPrivateService.createEvent(newEventDto, userId);
     }
 
@@ -68,5 +68,4 @@ public class EventPrivateController {
                                                          @PathVariable Long userId) {
         return eventPrivateService.rejectRequestByAuthor(eventId, reqId, userId);
     }
-
 }

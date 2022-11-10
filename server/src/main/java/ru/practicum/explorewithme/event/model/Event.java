@@ -6,6 +6,7 @@ import ru.practicum.explorewithme.compilation.model.Compilation;
 import ru.practicum.explorewithme.user.model.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Event {
     @NotNull
     @Column(name = "title", length = 120)
     private String title;
-    @NotNull
+    @NotBlank
     @Column(name = "annotation", length = 2000)
     private String annotation;
     @NotNull

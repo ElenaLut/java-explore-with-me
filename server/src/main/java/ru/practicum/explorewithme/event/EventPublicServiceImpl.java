@@ -15,7 +15,6 @@ import ru.practicum.explorewithme.event.model.Event;
 import ru.practicum.explorewithme.event.model.EventSort;
 import ru.practicum.explorewithme.event.model.EventState;
 import ru.practicum.explorewithme.exception.ForbiddenException;
-import ru.practicum.explorewithme.exception.IncorrectRequestException;
 import ru.practicum.explorewithme.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,9 +70,6 @@ public class EventPublicServiceImpl implements EventPublicService {
                 events = events.stream()
                         .sorted(Comparator.comparingLong(EventFullDto::getViews))
                         .collect(Collectors.toList());
-            } else {
-                log.error("Сортировки {} не существует", sort);
-                throw new IncorrectRequestException("Некорректная сортировка");
             }
         }
         events.forEach(e -> e.setViews(e.getViews() + 1));

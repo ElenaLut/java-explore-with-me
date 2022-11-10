@@ -24,7 +24,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
         Category category = getCategoryById(categoryUpdate.getId());
         if (Objects.equals(category.getName(), categoryUpdate.getName())) {
             log.error("Указанное имя уже используется в категории");
-            throw new ForbiddenException("Имя категории должно отличаться от текущего");
+            throw new ForbiddenException(String.format("Имя категории должно отличаться от текущего"));
         }
         category.setName(categoryUpdate.getName());
         log.info("Для категории с id {} установлено имя {}", category.getId(), category.getName());
@@ -44,7 +44,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
             log.error("Категории {} не существует", id);
-            throw new NotFoundException("Категории не существует");
+            throw new NotFoundException(String.format("Категории не существует"));
         }
         categoryRepository.deleteById(id);
         log.info("Категория {} удалена", id);
@@ -52,6 +52,6 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     private Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Не найдена категория с id " + id));
+                .orElseThrow(() -> new NotFoundException(String.format("Не найдена категория с id " + id)));
     }
 }
