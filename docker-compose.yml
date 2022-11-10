@@ -15,7 +15,7 @@ services:
       - SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver
 
   stats-db:
-    image: postgres:13
+    image: postgres:13.3
     container_name: stats-db
     expose:
       - "5433"
@@ -42,7 +42,7 @@ services:
       - STATS_SERVER_URL=http://stats-server:9090
 
   server-db:
-    image: postgres:14
+    image: postgres:13.3
     container_name: server-db
     ports:
       - "5432:5432"
