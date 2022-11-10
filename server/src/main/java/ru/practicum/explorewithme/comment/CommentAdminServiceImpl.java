@@ -22,14 +22,9 @@ public class CommentAdminServiceImpl implements CommentAdminService {
     private final CommentMapper commentMapper;
 
     @Override
-    public List<CommentDto> getAllComments(Long userId,
-                                           Long eventId,
-                                           String state,
-                                           LocalDateTime start,
-                                           LocalDateTime end,
-                                           int from,
+    public List<CommentDto> getAllComments(int from,
                                            int size) {
-        return commentRepository.getCommentsByAdmin(userId, eventId, state, start, end, PageRequest.of(from / size, size))
+        return commentRepository.findAll(PageRequest.of(from / size, size))
                 .stream()
                 .map(commentMapper::toCommentDto)
                 .collect(Collectors.toList());

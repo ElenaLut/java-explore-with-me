@@ -76,7 +76,7 @@ public class CommentAdminServiceTest {
                 .build();
         CommentDto commentDto = servicePrivate.createComment(newComment, user.getId());
         List<CommentDto> commentsOfUser = List.of(commentDto);
-        List<CommentDto> commentDtoList = service.getAllComments(null, null, null, null, null, 0, 10);
+        List<CommentDto> commentDtoList = service.getAllComments(0, 10);
         assertEquals(commentsOfUser, commentDtoList);
     }
 
