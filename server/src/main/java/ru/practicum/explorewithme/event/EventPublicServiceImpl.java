@@ -5,10 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.client.EndpointHit;
 import ru.practicum.explorewithme.client.StatsClient;
-import ru.practicum.explorewithme.comment.CommentMapper;
-import ru.practicum.explorewithme.comment.CommentRepository;
-import ru.practicum.explorewithme.comment.model.Comment;
-import ru.practicum.explorewithme.comment.model.CommentState;
 import ru.practicum.explorewithme.event.dto.EventFullDto;
 import ru.practicum.explorewithme.event.dto.EventShortDto;
 import ru.practicum.explorewithme.event.model.Event;
@@ -32,8 +28,6 @@ public class EventPublicServiceImpl implements EventPublicService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final StatsClient statsClient;
-    private final CommentRepository commentRepository;
-    private final CommentMapper commentMapper;
 
     @Override
     public List<EventShortDto> getEvents(String text,
@@ -94,8 +88,6 @@ public class EventPublicServiceImpl implements EventPublicService {
         eventRepository.save(event);
         saveStatisticHit(httpServletRequest);
         EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
-        List<Comment> comments = commentRepository.findAllByEventIdAndStatus(event.getId(), CommentState.PUBLISHED);
-        eventFullDto.setComments(comments.stream().map(commentMapper::toCommentDto).collect(Collectors.toList()));
         return eventFullDto;
     }
 
