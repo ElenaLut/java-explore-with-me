@@ -55,7 +55,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public EventFullDto changeEventByAuthor(UpdateEventRequestDto updateEventRequestDto, Long userId) {
         Event event = getEventById(updateEventRequestDto.getEventId());
-        checkAuthor(userId, event);
         Optional.ofNullable(updateEventRequestDto.getAnnotation()).ifPresent(event::setAnnotation);
         Optional.ofNullable(updateEventRequestDto.getDescription()).ifPresent(event::setDescription);
         Optional.ofNullable(updateEventRequestDto.getEventDate()).ifPresent(event::setEventDate);
@@ -87,7 +86,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public EventFullDto getFullInfoByAuthor(Long eventId, Long userId) {
         Event event = getEventById(eventId);
-        checkAuthor(userId, event);
         EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
         List<Comment> comments = commentRepository.findAllByEventIdAndStatus(event.getId(), CommentState.PUBLISHED);
         eventFullDto.setComments(comments.stream().map(commentMapper::toCommentDto).collect(Collectors.toList()));
@@ -104,7 +102,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public List<ParticipationRequestDto> getRequestsOnAuthorEvent(Long eventId, Long userId) {
-        getFullInfoByAuthor(eventId, userId);
         return requestRepository.findAllByEventId(eventId)
                 .stream()
                 .map(requestMapper::toRequestDto)
@@ -153,12 +150,5 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private Request getRequestById(Long id) {
         return requestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Не найден запрос с id " + id));
-    }
-
-    private void checkAuthor(Long userId, Event event) {
-        if (!event.getInitiator().getId().equals(userId)) {
-            log.error("Пользователь {} не может управлять событием {}", userId, event.getId());
-            throw new ForbiddenException("Управлять событием может только его автор");
-        }
     }
 }
