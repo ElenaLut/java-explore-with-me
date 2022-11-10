@@ -40,32 +40,32 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{userId}/events/{eventId}")
-    public EventFullDto getFullInfoByAuthor(@PathVariable Long eventId, @PathVariable Long userId) {
+    public EventFullDto getFullInfoByAuthor(@PathVariable Long userId, @PathVariable Long eventId) {
         return eventPrivateService.getFullInfoByAuthor(eventId, userId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}")
-    public EventFullDto cancelEventByAuthor(@PathVariable Long eventId, @PathVariable Long userId) {
+    public EventFullDto cancelEventByAuthor(@PathVariable Long userId, @PathVariable Long eventId) {
         return eventPrivateService.cancelEventByAuthor(eventId, userId);
     }
 
     @GetMapping("/{userId}/events/{eventId}/requests")
-    public List<ParticipationRequestDto> getRequestsOnAuthorEvent(@PathVariable Long eventId,
-                                                                  @PathVariable Long userId) {
+    public List<ParticipationRequestDto> getRequestsOnAuthorEvent(@PathVariable Long userId,
+                                                                  @PathVariable Long eventId) {
         return eventPrivateService.getRequestsOnAuthorEvent(eventId, userId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
-    public ParticipationRequestDto confirmRequestByAuthor(@PathVariable Long eventId,
-                                                          @PathVariable Long reqId,
-                                                          @PathVariable Long userId) {
+    public ParticipationRequestDto confirmRequestByAuthor(@PathVariable Long userId,
+                                                          @PathVariable Long eventId,
+                                                          @PathVariable Long reqId) {
         return eventPrivateService.confirmRequestByAuthor(eventId, reqId, userId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
-    public ParticipationRequestDto rejectRequestByAuthor(@PathVariable Long eventId,
-                                                         @PathVariable Long reqId,
-                                                         @PathVariable Long userId) {
+    public ParticipationRequestDto rejectRequestByAuthor(@PathVariable Long userId,
+                                                         @PathVariable Long eventId,
+                                                         @PathVariable Long reqId) {
         return eventPrivateService.rejectRequestByAuthor(eventId, reqId, userId);
     }
 }
