@@ -43,7 +43,7 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     @Override
     public CommentDto changeCommentByAuthor(UpdateCommentDto updateCommentDto, Long userId, Long commentId) {
         Comment oldComment = getCommentById(commentId);
-        if (oldComment.getUser().getId() != userId) {
+        if (!oldComment.getUser().getId().equals(userId)) {
             log.error("Пользователь {} не является автором комментария {}", userId, oldComment.getId());
             throw new ForbiddenException("Комментарий может обновить только автор");
         }
