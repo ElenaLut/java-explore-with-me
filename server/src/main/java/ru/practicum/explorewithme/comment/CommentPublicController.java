@@ -17,10 +17,10 @@ public class CommentPublicController {
 
     private final CommentPublicService commentPublicService;
 
-    @GetMapping("{commentId}")
-    public List<CommentDto> getCommentsByEventId(@PathVariable Long commentId,
+    @GetMapping("{eventId}")
+    public List<CommentDto> getCommentsByEventId(@PathVariable Long eventId,
                                                  @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                                  @Positive @RequestParam(defaultValue = "10") int size) {
-        return commentPublicService.findCommentsByEventId(commentId, from, size);
+        return commentPublicService.findCommentsByEventId(eventId, from, size);
     }
 }
