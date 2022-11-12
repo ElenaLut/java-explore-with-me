@@ -22,7 +22,7 @@ public class CategoryAdminController {
     }
 
     @PostMapping
-    public CategoryDto createCategory(@RequestBody NewCategoryDto newCategoryDto) {
+    public CategoryDto createCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         return categoryAdminService.createCategory(newCategoryDto);
     }
 

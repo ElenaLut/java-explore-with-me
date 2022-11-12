@@ -12,7 +12,6 @@ import ru.practicum.explorewithme.event.EventRepository;
 import ru.practicum.explorewithme.event.dto.EventShortDto;
 import ru.practicum.explorewithme.event.model.Event;
 import ru.practicum.explorewithme.exception.ForbiddenException;
-import ru.practicum.explorewithme.exception.IncorrectRequestException;
 import ru.practicum.explorewithme.exception.NotFoundException;
 
 import java.util.ArrayList;
@@ -46,14 +45,11 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     @Override
     public void deleteEventInsideCompilation(Long compId, Long eventId) {
         Compilation compilation = getCompilationById(compId);
-        Event event = compilation.getEvents()
-                .stream()
-                .filter(e -> e.getId().equals(eventId))
-                .findAny()
-                .orElseThrow(() ->
-                        new IncorrectRequestException(
-                                String.format("В подборке %s нет события %s", compId, eventId)));
-        compilation.getEvents().remove(event);
+        List<Event> events = compilation.getEvents();
+        Event event = getEventById(eventId);
+        if (events.contains(event)) {
+            compilation.getEvents().remove(event);
+        }
         compilationRepository.save(compilation);
     }
 
