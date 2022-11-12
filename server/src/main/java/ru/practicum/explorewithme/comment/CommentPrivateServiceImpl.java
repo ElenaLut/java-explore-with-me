@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.comment.dto.CommentDto;
-import ru.practicum.explorewithme.comment.dto.ShortCommentDto;
+import ru.practicum.explorewithme.comment.dto.NewCommentDto;
+import ru.practicum.explorewithme.comment.dto.UpdateCommentDto;
 import ru.practicum.explorewithme.comment.model.Comment;
 import ru.practicum.explorewithme.comment.model.CommentState;
 import ru.practicum.explorewithme.event.EventRepository;
@@ -30,38 +31,38 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     private final CommentRepository commentRepository;
 
     @Override
-    public CommentDto createComment(ShortCommentDto newCommentDto, Long userId) {
-        Comment comment = commentMapper.toCommentFromNew(newCommentDto);
+    public CommentDto createComment(NewCommentDto newCommentDto, Long userId) {
         Event event = eventRepository.findById(newCommentDto.getEvent()).orElseThrow(() ->
                 new NotFoundException("Не найдено событие с id " + newCommentDto.getEvent()));
-        if (event.getInitiator().getId().equals(userId)) {
-            log.error("Пользователь {} является автором собития {}", userId, event.getId());
-            throw new ForbiddenException("Пользователь не может оставить комментарий к своему мероприятию");
-        }
         User user = getUserById(userId);
-        comment.setEvent(event);
-        comment.setUser(user);
-        comment.setStatus(CommentState.PENDING);
+        Comment comment = commentMapper.toCommentFromNew(newCommentDto, event, user);
+        log.info("Создан комментарий {}", comment);
         return commentMapper.toCommentDto(commentRepository.save(comment));
     }
 
     @Override
-    public CommentDto changeCommentByAuthor(ShortCommentDto updateCommentDto, Long userId, Long commentId) {
+    public CommentDto changeCommentByAuthor(UpdateCommentDto updateCommentDto, Long userId, Long commentId) {
         Comment oldComment = getCommentById(commentId);
-        Comment updateComment = commentMapper.toCommentFromNew(updateCommentDto);
+        if (oldComment.getUser().getId() != userId) {
+            log.error("Пользователь {} не является автором комментария {}", userId, oldComment.getId());
+            throw new ForbiddenException("Комментарий может обновить только автор");
+        }
+        Comment updateComment = commentMapper.toCommentFromUpdate(updateCommentDto);
         Optional.ofNullable(updateComment.getDescription()).ifPresent(oldComment::setDescription);
         oldComment.setStatus(CommentState.PENDING);
+        log.info("Комментарий {} обновлен", oldComment);
         return commentMapper.toCommentDto(commentRepository.save(oldComment));
     }
 
     @Override
-    public void deleteComment(Long commentId, Long userId) {
+    public void cancelComment(Long commentId, Long userId) {
         Comment comment = getCommentById(commentId);
         if (!comment.getUser().getId().equals(userId)) {
             log.error("Пользователь {} не является автором комментария {}", userId, commentId);
             throw new ForbiddenException("Только автор комментарий может его удалить");
         }
         comment.setStatus(CommentState.CANCELED);
+        log.info("Комментарий {} удален", comment);
         commentRepository.save(comment);
     }
 

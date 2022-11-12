@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.comment.dto.CommentDto;
-import ru.practicum.explorewithme.comment.dto.ShortCommentDto;
+import ru.practicum.explorewithme.comment.dto.NewCommentDto;
+import ru.practicum.explorewithme.comment.dto.UpdateCommentDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -27,21 +28,21 @@ public class CommentPrivateController {
     }
 
     @PatchMapping("/{userId}/comments/{commentId}")
-    public CommentDto changeCommentByAuthor(@Valid @RequestBody ShortCommentDto updateCommentDto,
+    public CommentDto changeCommentByAuthor(@Valid @RequestBody UpdateCommentDto updateCommentDto,
                                             @PathVariable Long userId,
                                             @PathVariable Long commentId) {
         return commentPrivateService.changeCommentByAuthor(updateCommentDto, userId, commentId);
     }
 
     @PostMapping("/{userId}/comments")
-    public CommentDto createComment(@Valid @RequestBody ShortCommentDto newCommentDto,
+    public CommentDto createComment(@Valid @RequestBody NewCommentDto newCommentDto,
                                     @PathVariable Long userId) {
         return commentPrivateService.createComment(newCommentDto, userId);
     }
 
     @DeleteMapping("/{userId}/comments/{commentId}")
-    public void deleteComment(@PathVariable Long commentId,
+    public void cancelComment(@PathVariable Long commentId,
                               @PathVariable Long userId) {
-        commentPrivateService.deleteComment(commentId, userId);
+        commentPrivateService.cancelComment(commentId, userId);
     }
 }

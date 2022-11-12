@@ -14,7 +14,7 @@ import ru.practicum.explorewithme.comment.CommentAdminService;
 import ru.practicum.explorewithme.comment.CommentMapper;
 import ru.practicum.explorewithme.comment.CommentPrivateService;
 import ru.practicum.explorewithme.comment.dto.CommentDto;
-import ru.practicum.explorewithme.comment.dto.ShortCommentDto;
+import ru.practicum.explorewithme.comment.dto.NewCommentDto;
 import ru.practicum.explorewithme.comment.model.Comment;
 import ru.practicum.explorewithme.comment.model.CommentState;
 import ru.practicum.explorewithme.event.model.Event;
@@ -69,10 +69,9 @@ public class CommentAdminServiceTest {
     public void getCommentsOkTest() {
         Event event = generateEvent();
         User user = generateUser();
-        ShortCommentDto newComment = ShortCommentDto.builder()
+        NewCommentDto newComment = NewCommentDto.builder()
                 .description("Comment")
                 .event(event.getId())
-                .user(user.getId())
                 .build();
         CommentDto commentDto = servicePrivate.createComment(newComment, user.getId());
         List<CommentDto> commentsOfUser = List.of(commentDto);
@@ -86,7 +85,7 @@ public class CommentAdminServiceTest {
         CommentDto commentDto = mapper.toCommentDto(comment);
         CommentDto updated = commentDto;
         updated.setStatus(CommentState.PUBLISHED);
-        CommentDto actual = service.updateStateComment(updated.getId(), updated);
+        CommentDto actual = service.updateStateComment(commentDto.getId(), updated);
         assertEquals(updated, actual);
     }
 

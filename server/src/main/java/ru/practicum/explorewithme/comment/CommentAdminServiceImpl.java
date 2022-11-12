@@ -9,7 +9,6 @@ import ru.practicum.explorewithme.comment.model.Comment;
 import ru.practicum.explorewithme.exception.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,7 +31,8 @@ public class CommentAdminServiceImpl implements CommentAdminService {
     @Override
     public CommentDto updateStateComment(Long commentId, CommentDto commentDto) {
         Comment comment = getCommentById(commentId);
-        Optional.ofNullable(commentDto.getStatus()).ifPresent(comment::setStatus);
+        comment.setStatus(commentDto.getStatus());
+        log.info("Статус комментария {} - {}", commentId, comment.getStatus());
         return commentMapper.toCommentDto(commentRepository.save(comment));
     }
 

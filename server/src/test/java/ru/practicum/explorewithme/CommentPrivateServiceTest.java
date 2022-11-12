@@ -13,7 +13,8 @@ import ru.practicum.explorewithme.category.model.Category;
 import ru.practicum.explorewithme.comment.CommentMapper;
 import ru.practicum.explorewithme.comment.CommentPrivateService;
 import ru.practicum.explorewithme.comment.dto.CommentDto;
-import ru.practicum.explorewithme.comment.dto.ShortCommentDto;
+import ru.practicum.explorewithme.comment.dto.NewCommentDto;
+import ru.practicum.explorewithme.comment.dto.UpdateCommentDto;
 import ru.practicum.explorewithme.comment.model.Comment;
 import ru.practicum.explorewithme.comment.model.CommentState;
 import ru.practicum.explorewithme.event.model.Event;
@@ -64,10 +65,9 @@ public class CommentPrivateServiceTest {
     public void createCommentOkTest() {
         Event event = generateEvent();
         User user = generateUser();
-        ShortCommentDto newComment = ShortCommentDto.builder()
+        NewCommentDto newComment = NewCommentDto.builder()
                 .description("Comment")
                 .event(event.getId())
-                .user(user.getId())
                 .build();
         CommentDto saved = service.createComment(newComment, user.getId());
         CommentDto actual = mapper.toCommentDto(testEntityManager.find(Comment.class, saved.getId()));
@@ -75,26 +75,11 @@ public class CommentPrivateServiceTest {
     }
 
     @Test
-    public void createCommentByAuthorTest() {
-        Event event = generateEvent();
-        User user = generateUser();
-        event.setInitiator(user);
-        ShortCommentDto newComment = ShortCommentDto.builder()
-                .description("Comment")
-                .event(event.getId())
-                .user(user.getId())
-                .build();
-        assertThrows(ForbiddenException.class,
-                () -> service.createComment(newComment, user.getId()));
-    }
-
-    @Test
     public void createCommentWithWrongEventIdTest() {
         User user = generateUser();
-        ShortCommentDto newComment = ShortCommentDto.builder()
+        NewCommentDto newComment = NewCommentDto.builder()
                 .description("Comment")
                 .event(78L)
-                .user(user.getId())
                 .build();
         assertThrows(NotFoundException.class,
                 () -> service.createComment(newComment, user.getId()));
@@ -104,37 +89,33 @@ public class CommentPrivateServiceTest {
     public void updateCommentOkTest() {
         Event event = generateEvent();
         User user = generateUser();
-        ShortCommentDto newComment = ShortCommentDto.builder()
+        NewCommentDto newComment = NewCommentDto.builder()
                 .description("Comment")
                 .event(event.getId())
-                .user(user.getId())
                 .build();
         CommentDto saved = service.createComment(newComment, user.getId());
-        newComment.setDescription("CommentUpdate");
-        CommentDto updated = service.changeCommentByAuthor(newComment, user.getId(), saved.getId());
+        UpdateCommentDto updateComment = UpdateCommentDto.builder()
+                .description("CommentUpdate")
+                .build();
+        CommentDto updated = service.changeCommentByAuthor(updateComment, user.getId(), saved.getId());
         CommentDto actual = mapper.toCommentDto(testEntityManager.find(Comment.class, updated.getId()));
         assertEquals(updated.getDescription(), actual.getDescription());
     }
 
     @Test
     public void updateCommentWithWrongCommentIdTest() {
-        Event event = generateEvent();
         User user = generateUser();
-        ShortCommentDto newComment = ShortCommentDto.builder()
-                .description("Comment")
-                .event(event.getId())
-                .user(user.getId())
+        UpdateCommentDto updateComment = UpdateCommentDto.builder()
+                .description("CommentUpdate")
                 .build();
-        CommentDto saved = service.createComment(newComment, user.getId());
-        newComment.setDescription("CommentUpdate");
         assertThrows(NotFoundException.class,
-                () -> service.changeCommentByAuthor(newComment, user.getId(), 78L));
+                () -> service.changeCommentByAuthor(updateComment, user.getId(), 78L));
     }
 
     @Test
     public void deleteCommentOkTest() {
         Comment comment = generateComment();
-        service.deleteComment(comment.getId(), comment.getUser().getId());
+        service.cancelComment(comment.getId(), comment.getUser().getId());
         Comment deletedComment = comment;
         deletedComment.setStatus(CommentState.CANCELED);
         assertEquals(testEntityManager.find(Comment.class, comment.getId()), deletedComment);
@@ -144,17 +125,16 @@ public class CommentPrivateServiceTest {
     public void deleteCommentByWrongUserTest() {
         Comment comment = generateComment();
         assertThrows(ForbiddenException.class,
-                () -> service.deleteComment(comment.getId(), 78L));
+                () -> service.cancelComment(comment.getId(), 78L));
     }
 
     @Test
     public void getCommentsOkTest() {
         Event event = generateEvent();
         User user = generateUser();
-        ShortCommentDto newComment = ShortCommentDto.builder()
+        NewCommentDto newComment = NewCommentDto.builder()
                 .description("Comment")
                 .event(event.getId())
-                .user(user.getId())
                 .build();
         CommentDto commentDto = service.createComment(newComment, user.getId());
         List<CommentDto> commentsOfUser = List.of(commentDto);
